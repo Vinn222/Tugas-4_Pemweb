@@ -26,5 +26,87 @@
       <button id="btn-hapus-selesai">Hapus yang selesai</button>
     </div>
   </div>
+
+  <script>
+    const inputTugas      = document.getElementById('input-tugas');
+    const btnTambah       = document.getElementById('btn-tambah');
+    const daftarTugas     = document.getElementById('daftar-tugas');
+    const pesanKosong     = document.getElementById('pesan-kosong');
+    const infoTugas       = document.getElementById('info-tugas');
+    const btnHapusSelesai = document.getElementById('btn-hapus-selesai');
+
+    function updateInfo() {
+      const semua   = daftarTugas.querySelectorAll('.item-tugas').length;
+      const selesai = daftarTugas.querySelectorAll('.item-tugas.selesai').length;
+
+      pesanKosong.style.display = semua === 0 ? 'block' : 'none';
+      infoTugas.textContent     = semua > 0 ? selesai + ' dari ' + semua + ' selesai' : '';
+    }
+
+    function tambahTugas() {
+      const teks = inputTugas.value.trim();
+
+      if (teks === '') {
+        inputTugas.focus();
+        return;
+      }
+
+      const li = document.createElement('li');
+      li.className = 'item-tugas';
+
+      const checkbox = document.createElement('input');
+      checkbox.type  = 'checkbox';
+
+      const spanTeks = document.createElement('span');
+      spanTeks.className   = 'teks-tugas';
+      spanTeks.textContent = teks;
+
+      const btnHapus = document.createElement('button');
+      btnHapus.className   = 'btn-hapus';
+      btnHapus.textContent = '✕';
+      btnHapus.title       = 'Hapus tugas';
+
+      checkbox.addEventListener('change', function() {
+        if (checkbox.checked) {
+          li.classList.add('selesai');
+        } else {
+          li.classList.remove('selesai');
+        }
+        updateInfo();
+      });
+
+      btnHapus.addEventListener('click', function() {
+        li.remove();
+        updateInfo();
+      });
+
+      li.appendChild(checkbox);
+      li.appendChild(spanTeks);
+      li.appendChild(btnHapus);
+
+      daftarTugas.appendChild(li);
+
+      inputTugas.value = '';
+      inputTugas.focus();
+      updateInfo();
+    }
+
+    btnTambah.addEventListener('click', tambahTugas);
+
+    inputTugas.addEventListener('keydown', function(event) {
+      if (event.key === 'Enter') tambahTugas();
+    });
+
+    btnHapusSelesai.addEventListener('click', function() {
+      const itemSelesai = daftarTugas.querySelectorAll('.item-tugas.selesai');
+      itemSelesai.forEach(function(item) {
+        item.remove();
+      });
+      updateInfo();
+    });
+
+    updateInfo();
+  </script>
+
 </body>
 </html>
